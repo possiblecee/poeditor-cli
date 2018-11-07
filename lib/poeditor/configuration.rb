@@ -25,13 +25,17 @@ module POEditor
     # @return [Hash{Sting => String}] The path replacements
     attr_accessor :path_replace
 
+    # @return [Array<String>] Filters (optional)
+    attr_accessor :filters
+
     def initialize(api_key:, project_id:, type:, tags:nil,
                    languages:, language_alias:nil,
-                   path:, path_replace:nil)
+                   path:, path_replace:nil, filters:nil)
       @api_key = from_env(api_key)
       @project_id = from_env(project_id.to_s)
       @type = type
       @tags = tags || []
+      @filters = filters || []
 
       @languages = languages
       @language_alias = language_alias || {}
@@ -53,6 +57,7 @@ module POEditor
       values = {
         "type" => self.type,
         "tags" => self.tags,
+        "filters" => self.filters,
         "languages" => self.languages,
         "language_alias" => self.language_alias,
         "path" => self.path,

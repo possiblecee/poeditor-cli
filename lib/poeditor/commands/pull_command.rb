@@ -3,9 +3,15 @@ module POEditor
     def run(argv)
       UI.puts "Reading configuration"
       configuration = get_configuration(argv)
-      UI.puts configuration
+      # UI.puts configuration
       client = POEditor::Core.new(configuration)
-      client.pull()
+
+      check_index = argv.index("-u") || argv.index("--untranslated")
+      if check_index
+        client.check_untranslated()
+      else
+        client.pull()
+      end
     end
 
     # Detects and returns the location of `poeditor.yml` file from the given
@@ -41,6 +47,7 @@ Configuration file doesn't exist: #{config_path}.
         api_key: get_or_raise(yaml, "api_key"),
         project_id: get_or_raise(yaml, "project_id"),
         type: get_or_raise(yaml, "type"),
+        filters: yaml["filters"],
         tags: yaml["tags"],
         languages: get_or_raise(yaml, "languages"),
         language_alias: yaml["language_alias"],

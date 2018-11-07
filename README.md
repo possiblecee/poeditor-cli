@@ -92,6 +92,10 @@ path_replace:
 
     Terms which contain whole tags will be exported. (`&&`)
 
+* **filters** *(Optional)*
+
+    Filter results by 'translated', 'untranslated', 'fuzzy', 'not_fuzzy', 'automatic', 'not_automatic', 'proofread', 'not_proofread'. (`&&`)
+
 ## Example `poeditor.yml` files
 
 * Xcode project

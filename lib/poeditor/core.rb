@@ -39,6 +39,7 @@ module POEditor
                               :project_id => @configuration.project_id,
                               :language => language,
                               :type => @configuration.type,
+                              :filters => @configuration.filters,
                               :tags => @configuration.tags)
         write(language, content)
 
@@ -50,20 +51,41 @@ module POEditor
       end
     end
 
+    # Pull translations for untranslated check
+    def check_untranslated()
+      UI.puts "\nExport untranslated terms"
+      for language in @configuration.languages
+        UI.puts "  - Checking '#{language}'"
+        content = self.export(:api_key => @configuration.api_key,
+                              :project_id => @configuration.project_id,
+                              :language => language,
+                              :type => @configuration.type,
+                              :filters => ["untranslated"],
+                              :tags => @configuration.tags)
+        if content.length < 2
+          UI.puts "  #{"\xe2\x9c\x93".green} OK!\n".green
+        else
+          UI.puts "  #{"\xe2\x9c\x98 Untranslated found!".bold.red}\n#{content.red}"
+        end
+      end
+    end
+
     # Export translation for specific language
     #
     # @param api_key [String]
     # @param project_jd [String]
     # @param language [String]
     # @param type [String]
+    # @param filters [Array<String>]
     # @param tags [Array<String>]
     #
     # @return Downloaded translation content
-    def export(api_key:, project_id:, language:, type:, tags:nil)
+    def export(api_key:, project_id:, language:, type:, filters:nil, tags:nil)
       options = {
         "id" => project_id,
         "language" => convert_to_poeditor_language(language),
         "type" => type,
+        "filters" => (filters || []).join(","),
         "tags" => (tags || []).join(","),
       }
       response = self.api("projects/export", api_key, options)

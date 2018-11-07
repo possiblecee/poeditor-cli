@@ -56,3 +56,6 @@ build-iPhoneSimulator/
 
 *.sublime-project
 *.sublime-workspace
+
+.poeditor.yml
+*.strings
